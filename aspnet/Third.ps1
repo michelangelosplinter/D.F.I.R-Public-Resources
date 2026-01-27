@@ -167,24 +167,26 @@ $scriptblock = {
 
 
 
+
 $FirstEventConsumerToCleanup  = Get-WmiObject -Namespace root/subscription -Class CommandLineEventConsumer -Filter "Name = 'Check Uptime'"
 $FirstEventFilterToCleanup    = Get-WmiObject -Namespace root/subscription -Class __EventFilter -Filter "Name = 'SMBOperator'"
-$FirstFilterName = $thirdEventFilterToCleanup.Name
-$FirstConsumerName = $thirdEventConsumerToCleanup.Name
-$FirstQuery = $thirdEventFilterToCleanup.Query
-$FirstCommand = $thirdEventConsumerToCleanup.CommandLineTemplate
+$FirstFilterName = $FirstEventFilterToCleanup.Name
+$FirstConsumerName = $FirstEventConsumerToCleanup.Name
+$FirstQuery = $FirstEventFilterToCleanup.Query
+$FirstCommand = $FirstEventConsumerToCleanup.CommandLineTemplate
 $SecondEventConsumerToCleanup  = Get-WmiObject -Namespace root/subscription -Class CommandLineEventConsumer -Filter "Name = 'Google Update Cleanup'"
 $SecondEventFilterToCleanup    = Get-WmiObject -Namespace root/subscription -Class __EventFilter -Filter "Name = 'UpdateCleanup'"
-$SecondFilterName = $thirdEventFilterToCleanup.Name
-$SecondConsumerName = $thirdEventConsumerToCleanup.Name
-$SecondQuery = $thirdEventFilterToCleanup.Query
-$SecondCommand = $thirdEventConsumerToCleanup.CommandLineTemplate
+$SecondFilterName = $SecondEventFilterToCleanup.Name
+$SecondConsumerName = $SecondEventConsumerToCleanup.Name
+$SecondQuery = $SecondEventFilterToCleanup.Query
+$SecondCommand = $SecondEventConsumerToCleanup.CommandLineTemplate
 $ThirdEventConsumerToCleanup  = Get-WmiObject -Namespace root/subscription -Class CommandLineEventConsumer -Filter "Name = 'SVC Edge Updater'"
 $ThirdEventFilterToCleanup    = Get-WmiObject -Namespace root/subscription -Class __EventFilter -Filter "Name = 'EdgeUpdate'"
-$ThirdFilterName = $thirdEventFilterToCleanup.Name
-$ThirdConsumerName = $thirdEventConsumerToCleanup.Name
-$ThirdQuery = $thirdEventFilterToCleanup.Query
-$ThirdCommand = $thirdEventConsumerToCleanup.CommandLineTemplate
+$ThirdFilterName = $ThirdEventFilterToCleanup.Name
+$ThirdConsumerName = $ThirdEventConsumerToCleanup.Name
+$ThirdQuery = $ThirdEventFilterToCleanup.Query
+$ThirdCommand = $ThirdEventConsumerToCleanup.CommandLineTemplate
+
 
 
 $cmd = @"
